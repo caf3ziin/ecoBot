@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>EcoBot – Descarte Consciente</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --green-dark:  #1b4332;
+      --green-mid:   #2d6a4f;
+      --green-light: #40916c;
+      --green-pale:  #d8f3dc;
+      --accent:      #74c69d;
+      --yellow:      #f9c74f;
+      --red:         #e63946;
+      --blue:        #457b9d;
+      --orange:      #f4a261;
+      --gray-bg:     #f5f7f5;
+      --text:        #1a1a2e;
+      --muted:       #6b7280;
+    }
+
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: var(--gray-bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    /* ── HEADER ── */
+    header {
+      background: linear-gradient(135deg, var(--green-dark) 0%, var(--green-mid) 100%);
+      color: #fff;
+      padding: 2rem 1.5rem 3.5rem;
+      text-align: center;
+      clip-path: ellipse(120% 100% at 50% 0%);
+    }
+    header .logo { font-size: 2.8rem; margin-bottom: .3rem; }
+    header h1 { font-size: 2rem; font-weight: 700; letter-spacing: -.5px; }
+    header p  { font-size: 1rem; opacity: .85; margin-top: .4rem; }
+
+    /* ── SEARCH BOX ── */
+    .search-wrap {
+      max-width: 640px;
+      margin: -1.6rem auto 2rem;
+      padding: 0 1rem;
+      position: relative;
+      z-index: 10;
+    }
+    .search-inner {
+      display: flex;
+      background: #fff;
+      border-radius: 50px;
+      box-shadow: 0 8px 30px rgba(0,0,0,.12);
+      overflow: hidden;
+      border: 2px solid transparent;
+      transition: border-color .2s;
+    }
+    .search-inner:focus-within { border-color: var(--accent); }
+    .search-inner input {
+      flex: 1;
+      border: none;
+      outline: none;
+      padding: .9rem 1.4rem;
+      font-size: 1rem;
+      color: var(--text);
+      background: transparent;
+    }
+    .search-inner input::placeholder { color: var(--muted); }
+    .search-inner button {
+      background: var(--green-light);
+      border: none;
+      padding: .9rem 1.5rem;
+      color: #fff;
+      font-size: 1.2rem;
+      cursor: pointer;
+      transition: background .2s;
+    }
+    .search-inner button:hover { background: var(--green-dark); }
+
+    /* ── SUGGESTIONS DROPDOWN ── */
+    .suggestions {
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 8px 24px rgba(0,0,0,.1);
+      margin-top: .4rem;
+      overflow: hidden;
+      display: none;
+    }
+    .suggestions.show { display: block; }
+    .suggestion-item {
+      padding: .7rem 1.4rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: .7rem;
+      font-size: .95rem;
+      transition: background .15s;
+    }
+    .suggestion-item:hover { background: var(--green-pale); }
+    .suggestion-item .sug-icon { font-size: 1.2rem; }
+    .suggestion-item .sug-cat {
+      margin-left: auto;
+      font-size: .75rem;
+      color: var(--muted);
+      font-weight: 500;
+    }
+
+    /* ── MAIN AREA ── */
+    main { max-width: 800px; margin: 0 auto; padding: 0 1rem 4rem; }
+
+    /* ── RESULT CARD ── */
+    .result-card {
+      background: #fff;
+      border-radius: 20px;
+      box-shadow: 0 4px 20px rgba(0,0,0,.08);
+      overflow: hidden;
+      animation: fadeUp .35s ease;
+      display: none;
+      margin-bottom: 2rem;
+    }
+    .result-card.show { display: block; }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .result-header {
+      padding: 1.5rem 2rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      color: #fff;
+    }
+    .result-header .r-icon { font-size: 2.8rem; }
+    .result-header h2 { font-size: 1.4rem; font-weight: 700; }
+    .result-header .r-category {
+      font-size: .8rem;
+      opacity: .85;
+      background: rgba(255,255,255,.2);
+      padding: .2rem .7rem;
+      border-radius: 20px;
+      display: inline-block;
+      margin-top: .3rem;
+    }
+    .result-body { padding: 1.5rem 2rem; }
+    .result-body h3 {
+      font-size: .8rem;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      color: var(--muted);
+      margin-bottom: .7rem;
+    }
+    .result-body p { font-size: .95rem; line-height: 1.7; color: var(--text); margin-bottom: 1.2rem; }
+
+    .tips-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: .8rem;
+      margin-bottom: 1.4rem;
+    }
+    .tip-item {
+      background: var(--green-pale);
+      border-radius: 12px;
+      padding: .9rem 1rem;
+      display: flex;
+      gap: .7rem;
+      align-items: flex-start;
+      font-size: .88rem;
+      line-height: 1.5;
+    }
+    .tip-item .tip-icon { font-size: 1.2rem; flex-shrink: 0; }
+
+    .tag-list { display: flex; flex-wrap: wrap; gap: .5rem; }
+    .tag {
+      background: var(--green-pale);
+      color: var(--green-dark);
+      font-size: .78rem;
+      font-weight: 600;
+      padding: .3rem .8rem;
+      border-radius: 20px;
+    }
+
+    /* ── CATEGORY COLORS ── */
+    .cat-reciclavel .result-header  { background: linear-gradient(135deg, #2d6a4f, #40916c); }
+    .cat-organico   .result-header  { background: linear-gradient(135deg, #6b4226, #a0522d); }
+    .cat-especial   .result-header  { background: linear-gradient(135deg, #7b2d8b, #9c4dcc); }
+    .cat-rejeito    .result-header  { background: linear-gradient(135deg, #555, #777); }
+    .cat-perigoso   .result-header  { background: linear-gradient(135deg, #b5172e, #e63946); }
+
+    /* ── NOT FOUND ── */
+    .not-found {
+      text-align: center;
+      padding: 2.5rem 1rem;
+      display: none;
+    }
+    .not-found.show { display: block; }
+    .not-found .nf-icon { font-size: 3.5rem; margin-bottom: .8rem; }
+    .not-found h3 { font-size: 1.2rem; margin-bottom: .5rem; }
+    .not-found p  { color: var(--muted); font-size: .9rem; }
+
+    /* ── CATEGORIES GUIDE ── */
+    .cat-guide { margin-top: 1rem; }
+    .cat-guide h2 {
+      font-size: 1rem;
+      text-transform: uppercase;
+      letter-spacing: .07em;
+      color: var(--muted);
+      margin-bottom: 1rem;
+      font-weight: 600;
+    }
+    .cat-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(148px, 1fr));
+      gap: .9rem;
+    }
+    .cat-card {
+      border-radius: 16px;
+      padding: 1.2rem 1rem;
+      text-align: center;
+      cursor: pointer;
+      transition: transform .18s, box-shadow .18s;
+      color: #fff;
+      user-select: none;
+    }
+    .cat-card:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(0,0,0,.15); }
+    .cat-card .cc-icon { font-size: 2rem; margin-bottom: .5rem; }
+    .cat-card .cc-name { font-size: .85rem; font-weight: 700; }
+    .cat-card .cc-desc { font-size: .72rem; opacity: .85; margin-top: .2rem; }
+
+    .cc-blue   { background: linear-gradient(135deg, #1565c0, #1976d2); }
+    .cc-red    { background: linear-gradient(135deg, #b71c1c, #e53935); }
+    .cc-green  { background: linear-gradient(135deg, #1b5e20, #388e3c); }
+    .cc-yellow { background: linear-gradient(135deg, #f57f17, #fbc02d); color: #333; }
+    .cc-brown  { background: linear-gradient(135deg, #4e342e, #795548); }
+    .cc-purple { background: linear-gradient(135deg, #4a148c, #7b1fa2); }
+    .cc-orange { background: linear-gradient(135deg, #bf360c, #e64a19); }
+    .cc-gray   { background: linear-gradient(135deg, #37474f, #546e7a); }
+
+    /* ── FOOTER ── */
+    footer {
+      text-align: center;
+      padding: 2rem 1rem;
+      font-size: .8rem;
+      color: var(--muted);
+      border-top: 1px solid #e5e7e5;
+    }
+    footer span { color: var(--green-light); font-weight: 600; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 480px) {
+      header h1 { font-size: 1.6rem; }
+      .result-header { padding: 1.2rem 1.3rem; }
+      .result-body   { padding: 1.2rem 1.3rem; }
+      .tips-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo">♻️</div>
+  <h1>EcoBot</h1>
+  <p>Descubra o descarte correto para qualquer resíduo</p>
+</header>
+
+<!-- SEARCH -->
+<div class="search-wrap">
+  <div class="search-inner">
+    <input id="searchInput" type="text" placeholder="Ex: garrafa PET, pilha, papelão…" autocomplete="off" />
+    <button onclick="doSearch()" title="Pesquisar">🔍</button>
+  </div>
+  <div class="suggestions" id="suggestions"></div>
+</div>
+
+<main>
+  <!-- RESULT -->
+  <div class="result-card" id="resultCard"></div>
+  <div class="not-found" id="notFound">
+    <div class="nf-icon">🤔</div>
+    <h3>Resíduo não encontrado</h3>
+    <p>Tente pesquisar com outras palavras.<br>Ex: "vidro", "bateria", "resto de comida".</p>
+  </div>
+
+  <!-- GUIDE -->
+  <div class="cat-guide" id="catGuide">
+    <h2>Explore por categoria</h2>
+    <div class="cat-cards">
+      <div class="cat-card cc-blue"   onclick="filterCat('plástico')">
+        <div class="cc-icon">🫙</div>
+        <div class="cc-name">Plástico</div>
+        <div class="cc-desc">Lixeira azul</div>
+      </div>
+      <div class="cat-card cc-red"    onclick="filterCat('metal')">
+        <div class="cc-icon">🥫</div>
+        <div class="cc-name">Metal</div>
+        <div class="cc-desc">Lixeira amarela</div>
+      </div>
+      <div class="cat-card cc-green"  onclick="filterCat('vidro')">
+        <div class="cc-icon">🍶</div>
+        <div class="cc-name">Vidro</div>
+        <div class="cc-desc">Lixeira verde</div>
+      </div>
+      <div class="cat-card cc-yellow" onclick="filterCat('papel')">
+        <div class="cc-icon">📦</div>
+        <div class="cc-name">Papel</div>
+        <div class="cc-desc">Lixeira amarela</div>
+      </div>
+      <div class="cat-card cc-brown"  onclick="filterCat('orgânico')">
+        <div class="cc-icon">🌿</div>
+        <div class="cc-name">Orgânico</div>
+        <div class="cc-desc">Compostagem</div>
+      </div>
+      <div class="cat-card cc-purple" onclick="filterCat('eletrônico')">
+        <div class="cc-icon">📱</div>
+        <div class="cc-name">Eletrônico</div>
+        <div class="cc-desc">Ponto de coleta</div>
+      </div>
+      <div class="cat-card cc-orange" onclick="filterCat('perigoso')">
+        <div class="cc-icon">☢️</div>
+        <div class="cc-name">Perigoso</div>
+        <div class="cc-desc">Descarte especial</div>
+      </div>
+      <div class="cat-card cc-gray"   onclick="filterCat('rejeito')">
+        <div class="cc-icon">🗑️</div>
+        <div class="cc-name">Rejeito</div>
+        <div class="cc-desc">Lixo comum</div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <p>♻️ <span>EcoBot</span> — Juntos por um planeta mais limpo</p>
+</footer>
+
+<script>
+// ─── DATABASE ───────────────────────────────────────────────────────────────
+const residuos = [
+  // PLÁSTICO
+  {
+    nomes: ["garrafa pet", "pet", "garrafa plástica", "garrafa de refrigerante", "garrafa de água"],
+    icon: "🍶", nome: "Garrafa PET", categoria: "Plástico Reciclável", catKey: "plástico", cor: "cat-reciclavel",
+    descricao: "Garrafas PET (polietileno tereftalato) são 100% recicláveis e têm alto valor no mercado de reciclagem. Quando recicladas, podem virar garrafas novas, tecidos, tapetes e embalagens.",
+    instrucoes: [
+      { icon: "🚿", texto: "Lave a garrafa com água antes de descartar" },
+      { icon: "🔵", texto: "Coloque na lixeira AZUL de coleta seletiva" },
+      { icon: "🪄", texto: "Amasse para reduzir volume" },
+      { icon: "🧴", texto: "Remova rótulos e tampas (descarte-as separadamente)" },
+    ],
+    tags: ["Plástico", "Reciclável", "Lixeira Azul", "PET"]
+  },
+  {
+    nomes: ["sacola plástica", "sacola", "saco plástico", "sacolinhas"],
+    icon: "🛍️", nome: "Sacola Plástica", categoria: "Plástico Reciclável", catKey: "plástico", cor: "cat-reciclavel",
+    descricao: "Sacolas plásticas são recicláveis, mas causam problemas nos equipamentos de triagem quando misturadas. Prefira pontos de coleta específicos de plástico filme.",
+    instrucoes: [
+      { icon: "♻️", texto: "Leve a pontos de coleta de plástico filme (supermercados)" },
+      { icon: "🔵", texto: "Se limpa, pode ir na lixeira azul" },
+      { icon: "🛒", texto: "Reutilize quantas vezes puder antes de descartar" },
+      { icon: "🌿", texto: "Prefira sacolas reutilizáveis no dia a dia" },
+    ],
+    tags: ["Plástico Filme", "Reciclável", "Ponto Especial"]
+  },
+  {
+    nomes: ["embalagem plástica", "pote plástico", "pote de iogurte", "margarina", "vasilha"],
+    icon: "🫙", nome: "Embalagem / Pote Plástico", categoria: "Plástico Reciclável", catKey: "plástico", cor: "cat-reciclavel",
+    descricao: "Potes e embalagens plásticas rígidas geralmente são recicláveis. Verifique o símbolo de reciclagem na embalagem para confirmar o tipo de plástico.",
+    instrucoes: [
+      { icon: "🚿", texto: "Lave bem antes de descartar" },
+      { icon: "🔵", texto: "Coloque na lixeira AZUL de coleta seletiva" },
+      { icon: "🔍", texto: "Verifique o número do plástico no fundo da embalagem" },
+      { icon: "🚫", texto: "Embalagens com restos de alimento gordurosos vão ao rejeito" },
+    ],
+    tags: ["Plástico Rígido", "Reciclável", "Lixeira Azul"]
+  },
+  {
+    nomes: ["canudo", "canudinho", "canudo plástico"],
+    icon: "🥤", nome: "Canudo Plástico", categoria: "Plástico / Rejeito", catKey: "rejeito", cor: "cat-rejeito",
+    descricao: "Canudos plásticos são muito pequenos para ser triados nas esteiras de reciclagem e geralmente acabam no lixo comum. Prefira alternativas de inox, papel ou bambu.",
+    instrucoes: [
+      { icon: "🗑️", texto: "Descarte no lixo comum (rejeito)" },
+      { icon: "🌿", texto: "Prefira canudos de papel, bambu ou inox" },
+      { icon: "🚫", texto: "Não vai para a coleta seletiva — é muito pequeno para triagem" },
+    ],
+    tags: ["Rejeito", "Plástico Pequeno", "Substituível"]
+  },
+
+  // PAPEL
+  {
+    nomes: ["papelão", "caixa de papelão", "caixas", "caixa de pizza"],
+    icon: "📦", nome: "Papelão", categoria: "Papel Reciclável", catKey: "papel", cor: "cat-reciclavel",
+    descricao: "O papelão é um dos materiais com maior taxa de reciclagem. Cada tonelada reciclada economiza entre 15 e 20 árvores. Atenção: caixas de pizza com gordura devem ir para o lixo comum.",
+    instrucoes: [
+      { icon: "📐", texto: "Desmonte e achate as caixas para economizar espaço" },
+      { icon: "🟡", texto: "Coloque na lixeira AMARELA de coleta seletiva" },
+      { icon: "🍕", texto: "Caixas de pizza sujas de gordura: descarte no lixo comum" },
+      { icon: "💧", texto: "Papelão molhado ou muito sujo não é reciclável" },
+    ],
+    tags: ["Papel", "Reciclável", "Lixeira Amarela", "Papelão"]
+  },
+  {
+    nomes: ["papel", "folha de papel", "papel de escritório", "impressão"],
+    icon: "📄", nome: "Papel / Folhas", categoria: "Papel Reciclável", catKey: "papel", cor: "cat-reciclavel",
+    descricao: "Papéis de escritório, revistas, jornais e cadernos são altamente recicláveis. O papel reciclado usa até 60% menos energia para ser produzido.",
+    instrucoes: [
+      { icon: "🟡", texto: "Coloque na lixeira AMARELA de coleta seletiva" },
+      { icon: "📎", texto: "Remova clipes, grampos e plásticos antes de descartar" },
+      { icon: "💧", texto: "Papel molhado ou engordurado não é reciclável" },
+      { icon: "✂️", texto: "Pode ser dobrado ou amassado — não precisa estar liso" },
+    ],
+    tags: ["Papel", "Reciclável", "Lixeira Amarela"]
+  },
+  {
+    nomes: ["jornal", "revista", "livro velho"],
+    icon: "📰", nome: "Jornal / Revista", categoria: "Papel Reciclável", catKey: "papel", cor: "cat-reciclavel",
+    descricao: "Jornais e revistas são ótimos para reciclagem. Se ainda estiverem em boas condições, considere doá-los antes de descartar.",
+    instrucoes: [
+      { icon: "🎁", texto: "Se em bom estado, doe para escolas ou bibliotecas" },
+      { icon: "🟡", texto: "Coloque na lixeira AMARELA de coleta seletiva" },
+      { icon: "📦", texto: "Junte em pacotes amarrados para facilitar o transporte" },
+    ],
+    tags: ["Papel", "Reciclável", "Lixeira Amarela"]
+  },
+  {
+    nomes: ["papel higiênico", "guardanapo usado", "papel toalha", "lenço de papel"],
+    icon: "🧻", nome: "Papel Higiênico / Guardanapo", categoria: "Rejeito", catKey: "rejeito", cor: "cat-rejeito",
+    descricao: "Papel higiênico, guardanapos e lenços usados não são recicláveis — as fibras são muito curtas e estão contaminadas com resíduos orgânicos.",
+    instrucoes: [
+      { icon: "🗑️", texto: "Descarte no lixo comum (rejeito)" },
+      { icon: "🚫", texto: "Não misture com a coleta seletiva" },
+      { icon: "🌿", texto: "Quantidade pequena pode ir à compostagem (se não houver produtos químicos)" },
+    ],
+    tags: ["Rejeito", "Lixo Comum", "Não Reciclável"]
+  },
+
+  // VIDRO
+  {
+    nomes: ["garrafa de vidro", "vidro", "pote de vidro", "frasco de vidro", "copo de vidro"],
+    icon: "🫙", nome: "Garrafa / Pote de Vidro", categoria: "Vidro Reciclável", catKey: "vidro", cor: "cat-reciclavel",
+    descricao: "O vidro pode ser reciclado infinitas vezes sem perder qualidade! Reciclar vidro economiza até 30% de energia comparado à produção do zero.",
+    instrucoes: [
+      { icon: "🟢", texto: "Coloque na lixeira VERDE de coleta seletiva" },
+      { icon: "🚿", texto: "Enxágue para remover restos de alimentos" },
+      { icon: "⚠️", texto: "Cuidado com vidros quebrados — embale com papel ou jornal" },
+      { icon: "🔒", texto: "Tampa de metal: coloque junto na lixeira amarela" },
+    ],
+    tags: ["Vidro", "Reciclável", "Lixeira Verde"]
+  },
+  {
+    nomes: ["espelho", "vidro de janela", "vidro temperado", "cristal"],
+    icon: "🪞", nome: "Espelho / Vidro de Janela", categoria: "Rejeito", catKey: "rejeito", cor: "cat-rejeito",
+    descricao: "Espelhos, vidros de janela e cristais têm composição química diferente das garrafas e não podem ser reciclados pelo sistema convencional. Descarte com cuidado.",
+    instrucoes: [
+      { icon: "📰", texto: "Embale bem com jornal ou papelão para evitar acidentes" },
+      { icon: "🗑️", texto: "Descarte no lixo comum identificado como 'VIDRO – CUIDADO'" },
+      { icon: "🔨", texto: "Para grandes quantidades, leve a ecopontos municipais" },
+    ],
+    tags: ["Rejeito", "Vidro Especial", "Cuidado"]
+  },
+
+  // METAL
+  {
+    nomes: ["lata de alumínio", "latinha", "lata de refrigerante", "lata de cerveja"],
+    icon: "🥤", nome: "Lata de Alumínio", categoria: "Metal Reciclável", catKey: "metal", cor: "cat-reciclavel",
+    descricao: "O Brasil é recordista mundial na reciclagem de latas de alumínio! Reciclar alumínio economiza 95% da energia necessária para produzir alumínio novo. Latas são vendidas por cooperativas de reciclagem.",
+    instrucoes: [
+      { icon: "🟡", texto: "Coloque na lixeira AMARELA de coleta seletiva" },
+      { icon: "🦶", texto: "Pode amassar para economizar espaço" },
+      { icon: "🚿", texto: "Enxágue para evitar odores e pragas" },
+      { icon: "💚", texto: "Considere vender a cooperativas de catadores — tem valor real!" },
+    ],
+    tags: ["Metal", "Alumínio", "Reciclável", "Lixeira Amarela"]
+  },
+  {
+    nomes: ["lata de aço", "lata de extrato", "lata de tinta", "lata de conserva", "lata de milho", "lata de atum"],
+    icon: "🥫", nome: "Lata de Aço / Conserva", categoria: "Metal Reciclável", catKey: "metal", cor: "cat-reciclavel",
+    descricao: "Latas de aço (alimentos, tintas) são recicláveis. Atenção especial para latas de tinta — precisam estar secas e vazias.",
+    instrucoes: [
+      { icon: "🚿", texto: "Lave bem para remover restos" },
+      { icon: "🟡", texto: "Coloque na lixeira AMARELA de coleta seletiva" },
+      { icon: "🎨", texto: "Lata de tinta: seque completamente antes de descartar" },
+      { icon: "🔍", texto: "Latas de tinta com restos solventes: leve ao ecoponto" },
+    ],
+    tags: ["Metal", "Aço", "Reciclável", "Lixeira Amarela"]
+  },
+  {
+    nomes: ["ferro", "sucata", "metal velho", "panela velha", "cano"],
+    icon: "🔩", nome: "Sucata / Metal Velho", categoria: "Metal Reciclável", catKey: "metal", cor: "cat-reciclavel",
+    descricao: "Metais ferrosos (ferro, aço) e não-ferrosos (cobre, alumínio, bronze) têm alto valor de reciclagem e podem ser vendidos a ferros-velhos ou doados a cooperativas.",
+    instrucoes: [
+      { icon: "🏭", texto: "Leve a ferros-velhos, sucateiros ou ecopontos" },
+      { icon: "🟡", texto: "Peças pequenas podem ir na lixeira AMARELA" },
+      { icon: "💰", texto: "Metais têm valor comercial — considere vender a cooperativas" },
+    ],
+    tags: ["Metal", "Sucata", "Reciclável", "Ferro-Velho"]
+  },
+
+  // ORGÂNICO
+  {
+    nomes: ["resto de comida", "sobra de comida", "comida", "restos alimentares", "food waste"],
+    icon: "🍎", nome: "Restos de Comida", categoria: "Resíduo Orgânico", catKey: "orgânico", cor: "cat-organico",
+    descricao: "Restos de alimentos são resíduos orgânicos que podem ser compostados e transformados em adubo. A compostagem reduz a emissão de metano nos aterros sanitários.",
+    instrucoes: [
+      { icon: "🌿", texto: "Ideal: use composteira doméstica ou comunitária" },
+      { icon: "🟤", texto: "Coloque na lixeira MARROM (onde disponível)" },
+      { icon: "🗑️", texto: "Sem compostagem disponível: lixo comum (não coleta seletiva)" },
+      { icon: "🐛", texto: "Minhocário é ótima opção para apartamentos" },
+    ],
+    tags: ["Orgânico", "Compostável", "Lixeira Marrom"]
+  },
+  {
+    nomes: ["casca de frutas", "cascas", "casca de ovo", "borra de café", "folhas"],
+    icon: "🍌", nome: "Cascas / Resíduos Vegetais", categoria: "Resíduo Orgânico", catKey: "orgânico", cor: "cat-organico",
+    descricao: "Cascas de frutas, legumes, borra de café e cascas de ovo são excelentes para compostagem. São ricas em nutrientes e ajudam a enriquecer o solo.",
+    instrucoes: [
+      { icon: "♻️", texto: "Composte em casa ou em composteira comunitária" },
+      { icon: "🥚", texto: "Casca de ovo: triture antes de compostar" },
+      { icon: "☕", texto: "Borra de café: ótima para plantas diretamente" },
+      { icon: "🗑️", texto: "Sem compostagem: lixo comum" },
+    ],
+    tags: ["Orgânico", "Compostável", "Adubo Natural"]
+  },
+  {
+    nomes: ["grama", "poda", "galhos", "folhas de árvore", "jardim"],
+    icon: "🌿", nome: "Resíduos de Jardim / Poda", categoria: "Resíduo Orgânico / Verde", catKey: "orgânico", cor: "cat-organico",
+    descricao: "Galhos, folhas e restos de poda de jardim são recicláveis como matéria orgânica. Muitos municípios oferecem coleta especial de resíduos verdes.",
+    instrucoes: [
+      { icon: "🏙️", texto: "Verifique se sua cidade tem coleta de resíduos verdes" },
+      { icon: "🌿", texto: "Pode ser compostado — é excelente material 'seco'" },
+      { icon: "📞", texto: "Para grandes volumes, contate a prefeitura" },
+      { icon: "🚫", texto: "Não coloque em saco plástico — dificulta a compostagem" },
+    ],
+    tags: ["Orgânico", "Verde", "Compostável", "Poda"]
+  },
+
+  // ELETRÔNICO / ESPECIAL
+  {
+    nomes: ["pilha", "pilhas", "bateria comum", "pilha alcalina"],
+    icon: "🔋", nome: "Pilha / Bateria Comum", categoria: "Resíduo Especial", catKey: "eletrônico", cor: "cat-especial",
+    descricao: "Pilhas e baterias contêm metais pesados tóxicos (chumbo, mercúrio, cádmio) que contaminam solo e lençóis freáticos. NUNCA jogue no lixo comum ou na coleta seletiva.",
+    instrucoes: [
+      { icon: "🏪", texto: "Leve a pontos de coleta: supermercados, farmácias, eletrônicas" },
+      { icon: "🚫", texto: "NUNCA descarte no lixo comum ou coleta seletiva" },
+      { icon: "📦", texto: "Guarde em saco plástico separado até levar ao ponto de coleta" },
+      { icon: "📱", texto: "Busque pontos de coleta no site do fabricante ou prefeitura" },
+    ],
+    tags: ["Especial", "Tóxico", "Ponto de Coleta", "Metal Pesado"]
+  },
+  {
+    nomes: ["bateria de celular", "bateria de notebook", "bateria de carro", "bateria recarregável"],
+    icon: "🪫", nome: "Bateria Recarregável / Automotiva", categoria: "Resíduo Especial", catKey: "eletrônico", cor: "cat-especial",
+    descricao: "Baterias recarregáveis e automotivas são altamente tóxicas e contêm materiais valiosos para reciclagem. Existem programas específicos de devolução.",
+    instrucoes: [
+      { icon: "🚗", texto: "Bateria de carro: devolva à borracharia ou revendedora (obrigatório por lei)" },
+      { icon: "📱", texto: "Bateria de celular: devolva à loja do fabricante" },
+      { icon: "🏭", texto: "Bateria de notebook: busque pontos de coleta do fabricante" },
+      { icon: "🚫", texto: "NUNCA descarte em lixo comum — multa e crime ambiental" },
+    ],
+    tags: ["Especial", "Tóxico", "Ponto de Devolução", "Bateria"]
+  },
+  {
+    nomes: ["celular", "smartphone", "telefone", "aparelho celular"],
+    icon: "📱", nome: "Celular / Smartphone", categoria: "Lixo Eletrônico (e-lixo)", catKey: "eletrônico", cor: "cat-especial",
+    descricao: "Celulares contêm ouro, prata, cobre e metais raros recuperáveis, além de substâncias tóxicas. O descarte correto é obrigatório por lei (Política Nacional de Resíduos Sólidos).",
+    instrucoes: [
+      { icon: "🏪", texto: "Leve a lojas de celular, operadoras ou pontos de coleta de e-lixo" },
+      { icon: "🔒", texto: "Faça backup e apague todos os dados pessoais antes de descartar" },
+      { icon: "🎁", texto: "Se ainda funcionar, doe ou venda" },
+      { icon: "🏭", texto: "Fabricantes são obrigados a receber os aparelhos de volta" },
+    ],
+    tags: ["E-Lixo", "Eletrônico", "Especial", "Tóxico"]
+  },
+  {
+    nomes: ["computador", "notebook", "laptop", "desktop", "cpu"],
+    icon: "💻", nome: "Computador / Notebook", categoria: "Lixo Eletrônico (e-lixo)", catKey: "eletrônico", cor: "cat-especial",
+    descricao: "Computadores são equipamentos eletroeletrônicos que devem ser descartados em pontos especializados. Contêm metais preciosos e substâncias perigosas.",
+    instrucoes: [
+      { icon: "🏭", texto: "Leve a ecopontos ou pontos de coleta de e-lixo municipais" },
+      { icon: "🎓", texto: "Equipamentos funcionando: doe para escolas ou ONGs" },
+      { icon: "🔒", texto: "Apague o HD e formate antes de descartar" },
+      { icon: "🏪", texto: "Fabricantes como Dell, HP e Lenovo têm programas de devolução" },
+    ],
+    tags: ["E-Lixo", "Eletrônico", "Ponto de Coleta"]
+  },
+  {
+    nomes: ["televisão", "tv", "monitor", "televisor"],
+    icon: "📺", nome: "TV / Monitor", categoria: "Lixo Eletrônico (e-lixo)", catKey: "eletrônico", cor: "cat-especial",
+    descricao: "TVs e monitores, especialmente os antigos com tubo (CRT), contêm chumbo e outros materiais tóxicos. O descarte inadequado é proibido por lei.",
+    instrucoes: [
+      { icon: "🏙️", texto: "Leve ao ecoponto municipal — muitas cidades têm coleta especial" },
+      { icon: "🏪", texto: "Lojas de eletroeletrônicos são obrigadas a receber aparelhos velhos" },
+      { icon: "🚫", texto: "NUNCA descarte na calçada ou lixo comum" },
+      { icon: "🎁", texto: "TV funcionando: doe ou venda" },
+    ],
+    tags: ["E-Lixo", "Eletrônico", "CRT", "Tóxico"]
+  },
+
+  // PERIGOSO
+  {
+    nomes: ["remédio", "medicamento", "comprimido vencido", "medicamento vencido"],
+    icon: "💊", nome: "Medicamento Vencido / Não Usado", categoria: "Resíduo Especial (Saúde)", catKey: "perigoso", cor: "cat-perigoso",
+    descricao: "Medicamentos descartados no lixo comum ou pia contamina a água e o solo. A lei obriga farmácias a receberem medicamentos vencidos gratuitamente.",
+    instrucoes: [
+      { icon: "💊", texto: "Leve a qualquer farmácia — são obrigadas a receber (Resolução ANVISA)" },
+      { icon: "🚫", texto: "NUNCA descarte na pia, vaso sanitário ou lixo comum" },
+      { icon: "📦", texto: "Guarde na embalagem original para facilitar a identificação" },
+      { icon: "🏥", texto: "Postos de saúde e UBSs também costumam ter pontos de coleta" },
+    ],
+    tags: ["Saúde", "Especial", "Farmácia", "Tóxico"]
+  },
+  {
+    nomes: ["tinta", "tinta de parede", "tinta automotiva", "solvente", "verniz", "esmalte"],
+    icon: "🎨", nome: "Tinta / Solvente / Verniz", categoria: "Resíduo Perigoso", catKey: "perigoso", cor: "cat-perigoso",
+    descricao: "Tintas e solventes são resíduos perigosos que contaminam o solo e a água. Tintas à base d'água são menos perigosas, mas ainda precisam de descarte adequado.",
+    instrucoes: [
+      { icon: "🏙️", texto: "Leve ao ecoponto municipal ou ponto de coleta de resíduos perigosos" },
+      { icon: "🎨", texto: "Tinta à base d'água seca: deixe secar completamente — pode ir no lixo comum" },
+      { icon: "🚫", texto: "NUNCA despeje na pia, ralo ou lixo comum" },
+      { icon: "🏪", texto: "Lojas de tintas frequentemente têm programas de devolução" },
+    ],
+    tags: ["Perigoso", "Tóxico", "Ecoponto", "Química"]
+  },
+  {
+    nomes: ["óleo de cozinha", "óleo vegetal", "óleo usado", "gordura de cozinha"],
+    icon: "🫒", nome: "Óleo de Cozinha Usado", categoria: "Resíduo Especial", catKey: "perigoso", cor: "cat-especial",
+    descricao: "Um litro de óleo contamina até 1 milhão de litros de água. O óleo usado pode ser reciclado em biodiesel ou sabão. Nunca jogue na pia ou no solo.",
+    instrucoes: [
+      { icon: "🍶", texto: "Guarde em garrafa PET ou vidro com tampa" },
+      { icon: "🏪", texto: "Leve a pontos de coleta: supermercados, restaurantes parceiros" },
+      { icon: "🚿", texto: "Nunca jogue na pia, ralo ou no solo" },
+      { icon: "🧼", texto: "Pode ser usado para fazer sabão artesanal" },
+    ],
+    tags: ["Especial", "Óleo", "Ponto de Coleta", "Biodiesel"]
+  },
+  {
+    nomes: ["lâmpada", "lâmpada fluorescente", "lâmpada de led", "lâmpada incandescente"],
+    icon: "💡", nome: "Lâmpada", categoria: "Resíduo Especial", catKey: "perigoso", cor: "cat-especial",
+    descricao: "Lâmpadas fluorescentes contêm mercúrio e são altamente tóxicas. LEDs contêm metais raros. Ambas precisam de descarte especializado.",
+    instrucoes: [
+      { icon: "🏪", texto: "Leve a supermercados, lojas de material elétrico ou ecopontos" },
+      { icon: "🚫", texto: "Fluorescentes: NUNCA quebre — libera mercúrio tóxico" },
+      { icon: "📦", texto: "Embale com cuidado na caixa original" },
+      { icon: "💡", texto: "Prefira LED — dura mais e tem menor impacto ambiental" },
+    ],
+    tags: ["Especial", "Mercúrio", "Ponto de Coleta", "Lâmpada"]
+  },
+
+  // REJEITO
+  {
+    nomes: ["fralda", "fralda descartável", "absorvente"],
+    icon: "👶", nome: "Fralda / Absorvente", categoria: "Rejeito", catKey: "rejeito", cor: "cat-rejeito",
+    descricao: "Fraldas e absorventes usados são considerados rejeito biológico e devem ir ao lixo comum. Não são recicláveis pelo sistema convencional.",
+    instrucoes: [
+      { icon: "🗑️", texto: "Descarte no lixo comum (rejeito)" },
+      { icon: "🛍️", texto: "Embrulhe em sacola plástica antes de jogar fora" },
+      { icon: "🌿", texto: "Considere fraldas de pano — muito mais sustentáveis" },
+    ],
+    tags: ["Rejeito", "Biológico", "Lixo Comum"]
+  },
+  {
+    nomes: ["isopor", "poliestireno expandido", "caixinha de isopor"],
+    icon: "📦", nome: "Isopor (Poliestireno Expandido)", categoria: "Plástico / Rejeito", catKey: "rejeito", cor: "cat-rejeito",
+    descricao: "Isopor é tecnicamente reciclável, mas poucos municípios têm estrutura para isso. Na maioria das cidades brasileiras, vai ao lixo comum. Busque pontos específicos.",
+    instrucoes: [
+      { icon: "🔍", texto: "Verifique se sua cidade tem coleta ou ponto específico para isopor" },
+      { icon: "🗑️", texto: "Se não houver: descarte no lixo comum" },
+      { icon: "🎨", texto: "Reutilize em artesanato, embalagem de proteção ou horta" },
+      { icon: "🚫", texto: "Não queime — libera gases tóxicos" },
+    ],
+    tags: ["Isopor", "Plástico Especial", "Rejeito", "Verificar Local"]
+  },
+  {
+    nomes: ["cigarro", "bituca", "bituca de cigarro"],
+    icon: "🚬", nome: "Bituca de Cigarro", categoria: "Rejeito Tóxico", catKey: "rejeito", cor: "cat-rejeito",
+    descricao: "Bitucas de cigarro são um dos resíduos mais descartados irregularmente no mundo. Contêm mais de 7.000 substâncias tóxicas e demoram até 12 anos para se decompor.",
+    instrucoes: [
+      { icon: "🗑️", texto: "Descarte em cinzeiro ou lixo comum" },
+      { icon: "💧", texto: "Apague completamente antes de descartar" },
+      { icon: "🌊", texto: "Nunca jogue no chão ou em bueiros — vai parar nos rios" },
+      { icon: "♻️", texto: "Algumas marcas e projetos coletam bitucas para reciclagem especial" },
+    ],
+    tags: ["Rejeito", "Tóxico", "Lixo Comum"]
+  },
+];
+
+// ─── SEARCH LOGIC ────────────────────────────────────────────────────────────
+let debounceTimer;
+
+function normalize(str) {
+  return str.toLowerCase()
+    .normalize("NFD").replace(/[̀-ͯ]/g, "")
+    .replace(/[^a-z0-9\s]/g, "").trim();
+}
+
+function findResiduo(query) {
+  const q = normalize(query);
+  if (!q) return null;
+  // exact
+  for (const r of residuos) {
+    for (const n of r.nomes) {
+      if (normalize(n) === q) return r;
+    }
+  }
+  // contains
+  for (const r of residuos) {
+    for (const n of r.nomes) {
+      if (normalize(n).includes(q) || q.includes(normalize(n))) return r;
+    }
+  }
+  // partial word match
+  const words = q.split(/\s+/);
+  for (const r of residuos) {
+    for (const n of r.nomes) {
+      const nn = normalize(n);
+      if (words.some(w => w.length > 2 && nn.includes(w))) return r;
+    }
+  }
+  return null;
+}
+
+function getSuggestions(query) {
+  const q = normalize(query);
+  if (!q || q.length < 2) return [];
+  const seen = new Set();
+  const results = [];
+  for (const r of residuos) {
+    for (const n of r.nomes) {
+      const nn = normalize(n);
+      if (nn.includes(q) && !seen.has(r.nome)) {
+        seen.add(r.nome);
+        results.push(r);
+        break;
+      }
+    }
+    if (results.length >= 5) break;
+  }
+  return results;
+}
+
+function doSearch(query) {
+  const input = document.getElementById("searchInput");
+  const q = (query || input.value).trim();
+  if (!q) return;
+  input.value = q;
+  hideSuggestions();
+
+  const result = findResiduo(q);
+  const card   = document.getElementById("resultCard");
+  const nf     = document.getElementById("notFound");
+
+  if (result) {
+    card.className = "result-card show " + result.cor;
+    card.innerHTML = `
+      <div class="result-header">
+        <div class="r-icon">${result.icon}</div>
+        <div>
+          <h2>${result.nome}</h2>
+          <span class="r-category">${result.categoria}</span>
+        </div>
+      </div>
+      <div class="result-body">
+        <h3>Sobre este resíduo</h3>
+        <p>${result.descricao}</p>
+        <h3>Como descartar</h3>
+        <div class="tips-grid">
+          ${result.instrucoes.map(t => `
+            <div class="tip-item">
+              <span class="tip-icon">${t.icon}</span>
+              <span>${t.texto}</span>
+            </div>`).join("")}
+        </div>
+        <div class="tag-list">
+          ${result.tags.map(t => `<span class="tag">${t}</span>`).join("")}
+        </div>
+      </div>
+    `;
+    nf.classList.remove("show");
+  } else {
+    card.classList.remove("show");
+    nf.classList.add("show");
+  }
+
+  card.scrollIntoView({ behavior: "smooth", block: "nearest" });
+}
+
+function filterCat(cat) {
+  document.getElementById("searchInput").value = cat;
+  doSearch(cat);
+}
+
+// ─── SUGGESTIONS ─────────────────────────────────────────────────────────────
+const input = document.getElementById("searchInput");
+const sugBox = document.getElementById("suggestions");
+
+input.addEventListener("input", () => {
+  clearTimeout(debounceTimer);
+  debounceTimer = setTimeout(() => {
+    const q = input.value.trim();
+    const sugs = getSuggestions(q);
+    if (sugs.length === 0) { hideSuggestions(); return; }
+    sugBox.innerHTML = sugs.map(r => `
+      <div class="suggestion-item" onclick="doSearch('${r.nomes[0]}')">
+        <span class="sug-icon">${r.icon}</span>
+        <span>${r.nome}</span>
+        <span class="sug-cat">${r.categoria}</span>
+      </div>
+    `).join("");
+    sugBox.classList.add("show");
+  }, 150);
+});
+
+input.addEventListener("keydown", e => {
+  if (e.key === "Enter") doSearch();
+  if (e.key === "Escape") hideSuggestions();
+});
+
+document.addEventListener("click", e => {
+  if (!e.target.closest(".search-wrap")) hideSuggestions();
+});
+
+function hideSuggestions() { sugBox.classList.remove("show"); }
+</script>
+</body>
+</html>
