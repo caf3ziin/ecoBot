@@ -787,6 +787,18 @@ const residuos = [
     tags: ["Rejeito", "EPS", "Não Reciclável", "Poliestireno"]
   },
   {
+    nomes: ["resíduo engordurado", "embalagem engordurada", "plástico com gordura", "papel engordurado", "papelão engordurado"],
+    icon: "🛢️", nome: "Resíduo Engordurado", categoria: "Rejeito", catKey: "rejeito", cor: "cat-rejeito",
+    descricao: "Papel, papelão ou plástico contaminados com gordura ou óleo (como caixa de pizza suja, embalagem de fritura ou pote com resíduo de gordura) não podem ser reciclados, pois a gordura contamina toda a esteira de reciclagem.",
+    instrucoes: [
+      { icon: "🚿", texto: "Tente lavar/remover o excesso de gordura, se for possível reaproveitar como reciclável" },
+      { icon: "🗑️", texto: "Se não conseguir limpar, descarte no lixo comum (rejeito)" },
+      { icon: "✂️", texto: "Em caixas de pizza: separe a parte limpa (recicla) da parte engordurada (rejeito)" },
+      { icon: "🚫", texto: "Nunca coloque material engordurado na coleta seletiva" },
+    ],
+    tags: ["Rejeito", "Gordura", "Contaminado", "Não Reciclável"]
+  },
+  {
     nomes: ["máscara descartável", "máscara cirúrgica", "máscara de proteção", "máscara pff2"],
     icon: "😷", nome: "Máscara Descartável", categoria: "Rejeito", catKey: "rejeito", cor: "cat-rejeito",
     descricao: "Máscaras descartáveis são consideradas resíduo comum, mas por questões de higiene e biossegurança não devem ir para a coleta seletiva, pois podem contaminar outros materiais recicláveis.",
