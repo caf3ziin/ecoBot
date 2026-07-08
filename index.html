@@ -287,12 +287,12 @@
   <div class="cat-guide" id="catGuide">
     <h2>Explore por categoria</h2>
     <div class="cat-cards">
-      <div class="cat-card cc-blue"   onclick="filterCat('plástico')">
+      <div class="cat-card cc-red"    onclick="filterCat('plástico')">
         <div class="cc-icon">🫙</div>
         <div class="cc-name">Plástico</div>
-        <div class="cc-desc">Lixeira azul</div>
+        <div class="cc-desc">Lixeira vermelha</div>
       </div>
-      <div class="cat-card cc-red"    onclick="filterCat('metal')">
+      <div class="cat-card cc-yellow" onclick="filterCat('metal')">
         <div class="cc-icon">🥫</div>
         <div class="cc-name">Metal</div>
         <div class="cc-desc">Lixeira amarela</div>
@@ -302,10 +302,10 @@
         <div class="cc-name">Vidro</div>
         <div class="cc-desc">Lixeira verde</div>
       </div>
-      <div class="cat-card cc-yellow" onclick="filterCat('papel')">
+      <div class="cat-card cc-blue"   onclick="filterCat('papel')">
         <div class="cc-icon">📦</div>
         <div class="cc-name">Papel</div>
-        <div class="cc-desc">Lixeira amarela</div>
+        <div class="cc-desc">Lixeira azul</div>
       </div>
       <div class="cat-card cc-brown"  onclick="filterCat('orgânico')">
         <div class="cc-icon">🌿</div>
@@ -345,11 +345,11 @@ const residuos = [
     descricao: "Garrafas PET (polietileno tereftalato) são 100% recicláveis e têm alto valor no mercado de reciclagem. Quando recicladas, podem virar garrafas novas, tecidos, tapetes e embalagens.",
     instrucoes: [
       { icon: "🚿", texto: "Lave a garrafa com água antes de descartar" },
-      { icon: "🔵", texto: "Coloque na lixeira AZUL de coleta seletiva" },
+      { icon: "🔴", texto: "Coloque na lixeira VERMELHA de coleta seletiva" },
       { icon: "🪄", texto: "Amasse para reduzir volume" },
       { icon: "🧴", texto: "Remova rótulos e tampas (descarte-as separadamente)" },
     ],
-    tags: ["Plástico", "Reciclável", "Lixeira Azul", "PET"]
+    tags: ["Plástico", "Reciclável", "Lixeira Vermelha", "PET"]
   },
   {
     nomes: ["sacola plástica", "sacola", "saco plástico", "sacolinhas"],
@@ -357,7 +357,7 @@ const residuos = [
     descricao: "Sacolas plásticas são recicláveis, mas causam problemas nos equipamentos de triagem quando misturadas. Prefira pontos de coleta específicos de plástico filme.",
     instrucoes: [
       { icon: "♻️", texto: "Leve a pontos de coleta de plástico filme (supermercados)" },
-      { icon: "🔵", texto: "Se limpa, pode ir na lixeira azul" },
+      { icon: "🔴", texto: "Se limpa, pode ir na lixeira vermelha" },
       { icon: "🛒", texto: "Reutilize quantas vezes puder antes de descartar" },
       { icon: "🌿", texto: "Prefira sacolas reutilizáveis no dia a dia" },
     ],
@@ -369,11 +369,11 @@ const residuos = [
     descricao: "Potes e embalagens plásticas rígidas geralmente são recicláveis. Verifique o símbolo de reciclagem na embalagem para confirmar o tipo de plástico.",
     instrucoes: [
       { icon: "🚿", texto: "Lave bem antes de descartar" },
-      { icon: "🔵", texto: "Coloque na lixeira AZUL de coleta seletiva" },
+      { icon: "🔴", texto: "Coloque na lixeira VERMELHA de coleta seletiva" },
       { icon: "🔍", texto: "Verifique o número do plástico no fundo da embalagem" },
       { icon: "🚫", texto: "Embalagens com restos de alimento gordurosos vão ao rejeito" },
     ],
-    tags: ["Plástico Rígido", "Reciclável", "Lixeira Azul"]
+    tags: ["Plástico Rígido", "Reciclável", "Lixeira Vermelha"]
   },
   {
     nomes: ["canudo", "canudinho", "canudo plástico"],
@@ -387,6 +387,56 @@ const residuos = [
     tags: ["Rejeito", "Plástico Pequeno", "Substituível"]
   },
 
+  {
+    nomes: ["tampinha de garrafa", "tampa de garrafa", "tampa plástica", "tampinha"],
+    icon: "🔵", nome: "Tampinha de Garrafa", categoria: "Plástico Reciclável", catKey: "plástico", cor: "cat-reciclavel",
+    descricao: "Tampinhas plásticas são recicláveis, mas geralmente feitas de um plástico diferente (PP) do da garrafa (PET), por isso é comum separá-las. Muitas campanhas sociais arrecadam tampinhas para trocar por cadeiras de rodas e tratamentos.",
+    instrucoes: [
+      { icon: "🔵", texto: "Coloque na lixeira vermelha de coleta seletiva, separada da garrafa" },
+      { icon: "🎗️", texto: "Considere doar para campanhas de arrecadação de tampinhas" },
+      { icon: "🚿", texto: "Lave antes de descartar, se possível" },
+      { icon: "📦", texto: "Junte várias tampinhas antes de levar a um ponto de coleta" },
+    ],
+    tags: ["Plástico", "Reciclável", "PP", "Campanha Social"]
+  },
+
+  {
+    nomes: ["embalagem de detergente", "frasco de detergente", "garrafa de detergente"],
+    icon: "🧴", nome: "Embalagem de Detergente", categoria: "Plástico Reciclável", catKey: "plástico", cor: "cat-reciclavel",
+    descricao: "Embalagens de detergente e produtos de limpeza são feitas de plástico reciclável (geralmente PEAD/PET), mas precisam ser bem enxaguadas antes do descarte para não contaminar outros recicláveis.",
+    instrucoes: [
+      { icon: "🚿", texto: "Enxágue bem para remover resíduos do produto" },
+      { icon: "🔵", texto: "Coloque na lixeira vermelha de coleta seletiva" },
+      { icon: "🔒", texto: "Tampinha pode ser descartada junto ou separada" },
+      { icon: "🪄", texto: "Amasse para reduzir volume, se possível" },
+    ],
+    tags: ["Plástico", "Reciclável", "Limpeza"]
+  },
+  {
+    nomes: ["embalagem de xampu", "frasco de xampu", "shampoo", "garrafa de shampoo", "condicionador"],
+    icon: "🧴", nome: "Embalagem de Xampu", categoria: "Plástico Reciclável", catKey: "plástico", cor: "cat-reciclavel",
+    descricao: "Frascos de xampu e condicionador são plásticos recicláveis. Restos de produto não são um grande problema, mas enxaguar ajuda na qualidade da reciclagem.",
+    instrucoes: [
+      { icon: "🚿", texto: "Enxágue rapidamente para remover o excesso de produto" },
+      { icon: "🔵", texto: "Coloque na lixeira vermelha de coleta seletiva" },
+      { icon: "🔒", texto: "Descarte a tampinha junto ou separadamente" },
+      { icon: "🪄", texto: "Amasse para reduzir volume" },
+    ],
+    tags: ["Plástico", "Reciclável", "Higiene"]
+  },
+  {
+    nomes: ["pote de margarina", "pote de manteiga", "potinho plástico", "pote de requeijão"],
+    icon: "🧈", nome: "Pote de Margarina", categoria: "Plástico Reciclável", catKey: "plástico", cor: "cat-reciclavel",
+    descricao: "Potes de margarina, manteiga e requeijão são plásticos recicláveis (geralmente PP) e muito reutilizáveis para organizar objetos antes do descarte final.",
+    instrucoes: [
+      { icon: "🚿", texto: "Lave bem para remover a gordura antes de descartar" },
+      { icon: "🔵", texto: "Coloque na lixeira vermelha de coleta seletiva" },
+      { icon: "♻️", texto: "Reutilize para guardar objetos, temperos ou sementes antes de descartar" },
+      { icon: "🚫", texto: "Se estiver muito engordurado e não der pra lavar, vai para o rejeito" },
+    ],
+    tags: ["Plástico", "Reciclável", "PP", "Reutilizável"]
+  },
+
   // PAPEL
   {
     nomes: ["papelão", "caixa de papelão", "caixas", "caixa de pizza"],
@@ -394,23 +444,23 @@ const residuos = [
     descricao: "O papelão é um dos materiais com maior taxa de reciclagem. Cada tonelada reciclada economiza entre 15 e 20 árvores. Atenção: caixas de pizza com gordura devem ir para o lixo comum.",
     instrucoes: [
       { icon: "📐", texto: "Desmonte e achate as caixas para economizar espaço" },
-      { icon: "🟡", texto: "Coloque na lixeira AMARELA de coleta seletiva" },
+      { icon: "🔵", texto: "Coloque na lixeira AZUL de coleta seletiva" },
       { icon: "🍕", texto: "Caixas de pizza sujas de gordura: descarte no lixo comum" },
       { icon: "💧", texto: "Papelão molhado ou muito sujo não é reciclável" },
     ],
-    tags: ["Papel", "Reciclável", "Lixeira Amarela", "Papelão"]
+    tags: ["Papel", "Reciclável", "Lixeira Azul", "Papelão"]
   },
   {
     nomes: ["papel", "folha de papel", "papel de escritório", "impressão"],
     icon: "📄", nome: "Papel / Folhas", categoria: "Papel Reciclável", catKey: "papel", cor: "cat-reciclavel",
     descricao: "Papéis de escritório, revistas, jornais e cadernos são altamente recicláveis. O papel reciclado usa até 60% menos energia para ser produzido.",
     instrucoes: [
-      { icon: "🟡", texto: "Coloque na lixeira AMARELA de coleta seletiva" },
+      { icon: "🔵", texto: "Coloque na lixeira AZUL de coleta seletiva" },
       { icon: "📎", texto: "Remova clipes, grampos e plásticos antes de descartar" },
       { icon: "💧", texto: "Papel molhado ou engordurado não é reciclável" },
       { icon: "✂️", texto: "Pode ser dobrado ou amassado — não precisa estar liso" },
     ],
-    tags: ["Papel", "Reciclável", "Lixeira Amarela"]
+    tags: ["Papel", "Reciclável", "Lixeira Azul"]
   },
   {
     nomes: ["jornal", "revista", "livro velho"],
@@ -418,10 +468,10 @@ const residuos = [
     descricao: "Jornais e revistas são ótimos para reciclagem. Se ainda estiverem em boas condições, considere doá-los antes de descartar.",
     instrucoes: [
       { icon: "🎁", texto: "Se em bom estado, doe para escolas ou bibliotecas" },
-      { icon: "🟡", texto: "Coloque na lixeira AMARELA de coleta seletiva" },
+      { icon: "🔵", texto: "Coloque na lixeira AZUL de coleta seletiva" },
       { icon: "📦", texto: "Junte em pacotes amarrados para facilitar o transporte" },
     ],
-    tags: ["Papel", "Reciclável", "Lixeira Amarela"]
+    tags: ["Papel", "Reciclável", "Lixeira Azul"]
   },
   {
     nomes: ["papel higiênico", "guardanapo usado", "papel toalha", "lenço de papel"],
@@ -495,6 +545,19 @@ const residuos = [
       { icon: "💰", texto: "Metais têm valor comercial — considere vender a cooperativas" },
     ],
     tags: ["Metal", "Sucata", "Reciclável", "Ferro-Velho"]
+  },
+
+  {
+    nomes: ["lata de café", "lata de leite em pó", "lata metálica de alimento"],
+    icon: "🥫", nome: "Lata de Café / Alimento", categoria: "Metal Reciclável", catKey: "metal", cor: "cat-reciclavel",
+    descricao: "Latas de café, leite em pó e outros alimentos são geralmente de folha de flandres (aço) e altamente recicláveis, podendo virar peças novas de aço infinitas vezes.",
+    instrucoes: [
+      { icon: "🚿", texto: "Lave a lata para remover resíduos de alimento" },
+      { icon: "🟡", texto: "Coloque na lixeira amarela de coleta seletiva" },
+      { icon: "⚠️", texto: "Cuidado com as bordas cortantes ao lavar e descartar" },
+      { icon: "♻️", texto: "Tampas plásticas devem ser separadas e vão para o plástico" },
+    ],
+    tags: ["Metal", "Reciclável", "Aço", "Lixeira Amarela"]
   },
 
   // ORGÂNICO
@@ -597,6 +660,56 @@ const residuos = [
     tags: ["E-Lixo", "Eletrônico", "CRT", "Tóxico"]
   },
 
+  {
+    nomes: ["fidget spinner", "spinner", "mão de gordinho"],
+    icon: "🌀", nome: "Fidget Spinner", categoria: "Brinquedo Misto (plástico + metal)", catKey: "eletrônico", cor: "cat-especial",
+    descricao: "O fidget spinner é feito de plástico ou metal com um rolamento (bearing) metálico no centro. Como mistura materiais diferentes bem encaixados, o ideal é tentar separar as partes antes de descartar.",
+    instrucoes: [
+      { icon: "🔧", texto: "Tente remover o rolamento central de metal com uma chave de fenda" },
+      { icon: "🔴", texto: "Corpo de plástico: lixeira vermelha de coleta seletiva" },
+      { icon: "⚙️", texto: "Rolamento de metal: junte com metais recicláveis" },
+      { icon: "🗑️", texto: "Se não conseguir separar as peças, descarte como rejeito" },
+    ],
+    tags: ["Brinquedo", "Misto", "Metal", "Plástico"]
+  },
+  {
+    nomes: ["fone de ouvido", "fone", "headphone", "earphone", "fone bluetooth"],
+    icon: "🎧", nome: "Fone de Ouvido", categoria: "Lixo Eletrônico (e-lixo)", catKey: "eletrônico", cor: "cat-especial",
+    descricao: "Fones de ouvido contêm fiação de cobre, ímãs e, em modelos sem fio, baterias — todos materiais que exigem descarte especializado.",
+    instrucoes: [
+      { icon: "🏪", texto: "Leve a pontos de coleta de e-lixo ou lojas de eletrônicos" },
+      { icon: "🔋", texto: "Se tiver bateria (Bluetooth), NUNCA descarte no lixo comum" },
+      { icon: "🎁", texto: "Se ainda funcionar, doe ou venda" },
+      { icon: "🚫", texto: "Não descarte na coleta seletiva comum" },
+    ],
+    tags: ["E-Lixo", "Eletrônico", "Ponto de Coleta"]
+  },
+  {
+    nomes: ["cabo usb", "carregador", "cabo de celular", "fonte", "cabo elétrico"],
+    icon: "🔌", nome: "Cabo / Carregador", categoria: "Lixo Eletrônico (e-lixo)", catKey: "eletrônico", cor: "cat-especial",
+    descricao: "Cabos e carregadores contêm cobre de alto valor de reciclagem e plástico/borracha no revestimento. Não devem ir para o lixo comum.",
+    instrucoes: [
+      { icon: "🏪", texto: "Leve a pontos de coleta de e-lixo ou lojas de eletrônicos" },
+      { icon: "📦", texto: "Junte vários cabos antes de levar ao ponto de coleta" },
+      { icon: "🎁", texto: "Cabos funcionando podem ser doados" },
+      { icon: "🚫", texto: "Não descarte na coleta seletiva comum nem no lixo orgânico" },
+    ],
+    tags: ["E-Lixo", "Eletrônico", "Cobre", "Ponto de Coleta"]
+  },
+
+  {
+    nomes: ["eletrônico quebrado", "eletrônicos quebrados", "aparelho quebrado", "eletrodoméstico quebrado", "e-lixo"],
+    icon: "🖥️", nome: "Eletrônicos Quebrados (Geral)", categoria: "Lixo Eletrônico (e-lixo)", catKey: "eletrônico", cor: "cat-especial",
+    descricao: "Qualquer eletrônico quebrado (liquidificador, secador, rádio, controle remoto, etc.) é considerado e-lixo e deve ir a pontos de coleta especializados, nunca ao lixo comum.",
+    instrucoes: [
+      { icon: "🏭", texto: "Leve a ecopontos municipais ou pontos de coleta de e-lixo" },
+      { icon: "🏪", texto: "Lojas de eletrônicos costumam aceitar aparelhos usados/quebrados" },
+      { icon: "🔋", texto: "Remova pilhas ou baterias e descarte-as separadamente" },
+      { icon: "🚫", texto: "NUNCA descarte no lixo comum ou coleta seletiva" },
+    ],
+    tags: ["E-Lixo", "Eletrônico", "Ponto de Coleta"]
+  },
+
   // PERIGOSO
   {
     nomes: ["remédio", "medicamento", "comprimido vencido", "medicamento vencido"],
@@ -647,7 +760,56 @@ const residuos = [
     tags: ["Especial", "Mercúrio", "Ponto de Coleta", "Lâmpada"]
   },
 
+  {
+    nomes: ["gilete", "lâmina de barbear", "navalha", "aparelho de barbear descartável", "barbeador"],
+    icon: "🪒", nome: "Lâmina de Barbear (Gilete)", categoria: "Resíduo Perigoso (perfurocortante)", catKey: "perigoso", cor: "cat-perigoso",
+    descricao: "Lâminas de barbear são perfurocortantes e podem causar acidentes graves para catadores e coletores se descartadas soltas. Precisam de embalagem especial antes do descarte.",
+    instrucoes: [
+      { icon: "📦", texto: "Embale em uma garrafa PET ou lata vazia e feche bem" },
+      { icon: "🏷️", texto: "Identifique a embalagem como 'PERFUROCORTANTE'" },
+      { icon: "🗑️", texto: "Descarte no lixo comum (rejeito), nunca solta" },
+      { icon: "🚫", texto: "Nunca jogue na coleta seletiva nem solta no lixo comum" },
+    ],
+    tags: ["Perigoso", "Perfurocortante", "Cuidado"]
+  },
+
   // REJEITO
+  {
+    nomes: ["isopor", "copo de isopor", "prato de isopor", "embalagem de isopor", "styrofoam"],
+    icon: "🥡", nome: "Isopor (EPS)", categoria: "Rejeito", catKey: "rejeito", cor: "cat-rejeito",
+    descricao: "O isopor (poliestireno expandido) tecnicamente é reciclável, mas poucas cidades têm coleta especializada, e ele não pode ir na coleta seletiva comum por contaminar outros materiais.",
+    instrucoes: [
+      { icon: "🗑️", texto: "Na maioria das cidades, descarte no lixo comum (rejeito)" },
+      { icon: "🔍", texto: "Verifique se há ponto de coleta específico de isopor na sua cidade" },
+      { icon: "🚫", texto: "Não coloque na lixeira vermelha/coleta seletiva comum" },
+      { icon: "♻️", texto: "Evite comprar produtos embalados em isopor quando possível" },
+    ],
+    tags: ["Rejeito", "EPS", "Não Reciclável", "Poliestireno"]
+  },
+  {
+    nomes: ["máscara descartável", "máscara cirúrgica", "máscara de proteção", "máscara pff2"],
+    icon: "😷", nome: "Máscara Descartável", categoria: "Rejeito", catKey: "rejeito", cor: "cat-rejeito",
+    descricao: "Máscaras descartáveis são consideradas resíduo comum, mas por questões de higiene e biossegurança não devem ir para a coleta seletiva, pois podem contaminar outros materiais recicláveis.",
+    instrucoes: [
+      { icon: "✂️", texto: "Corte os elásticos antes de descartar, para não prender animais" },
+      { icon: "🛍️", texto: "Embale em um saco plástico fechado" },
+      { icon: "🗑️", texto: "Descarte no lixo comum (rejeito)" },
+      { icon: "🚫", texto: "NUNCA coloque na coleta seletiva" },
+    ],
+    tags: ["Rejeito", "Biossegurança", "Não Reciclável"]
+  },
+  {
+    nomes: ["guarda-chuva quebrado", "guarda chuva", "sombrinha quebrada"],
+    icon: "☂️", nome: "Guarda-Chuva Quebrado", categoria: "Rejeito", catKey: "rejeito", cor: "cat-rejeito",
+    descricao: "Guarda-chuvas misturam metal (varetas), tecido/plástico (cobertura) e plástico (cabo) fortemente unidos, o que dificulta muito a reciclagem convencional.",
+    instrucoes: [
+      { icon: "🔧", texto: "Se possível, separe as varetas de metal para reciclagem" },
+      { icon: "🗑️", texto: "O restante (tecido + cabo) vai para o lixo comum (rejeito)" },
+      { icon: "🎁", texto: "Se ainda funcionar, considere doar ou consertar" },
+      { icon: "⚠️", texto: "Cuidado com as pontas de metal ao descartar" },
+    ],
+    tags: ["Rejeito", "Misto", "Metal", "Não Reciclável"]
+  },
   {
     nomes: ["fralda", "fralda descartável", "absorvente"],
     icon: "👶", nome: "Fralda / Absorvente", categoria: "Rejeito", catKey: "rejeito", cor: "cat-rejeito",
@@ -682,6 +844,42 @@ const residuos = [
       { icon: "♻️", texto: "Algumas marcas e projetos coletam bitucas para reciclagem especial" },
     ],
     tags: ["Rejeito", "Tóxico", "Lixo Comum"]
+  },
+  {
+    nomes: ["tecido", "pedaço de tecido", "retalho", "roupa velha", "pano"],
+    icon: "🧵", nome: "Tecido / Retalho", categoria: "Têxtil", catKey: "rejeito", cor: "cat-rejeito",
+    descricao: "Roupas e tecidos em bom estado devem ser doados. Retalhos, panos rasgados e tecidos muito desgastados não têm reciclagem comum disponível na maioria das cidades.",
+    instrucoes: [
+      { icon: "🎁", texto: "Se estiver em bom estado, doe para brechós ou instituições" },
+      { icon: "🔍", texto: "Verifique pontos de coleta têxtil (algumas cidades têm)" },
+      { icon: "🧽", texto: "Retalhos pequenos podem virar panos de limpeza reutilizáveis" },
+      { icon: "🗑️", texto: "Tecido rasgado sem uso: descarte no lixo comum (rejeito)" },
+    ],
+    tags: ["Têxtil", "Rejeito", "Doação"]
+  },
+  {
+    nomes: ["esponja usada", "esponja de louça", "esponja de cozinha"],
+    icon: "🧽", nome: "Esponja de Louça Usada", categoria: "Rejeito", catKey: "rejeito", cor: "cat-rejeito",
+    descricao: "Esponjas de louça misturam espuma sintética e fibra abrasiva, materiais que não são reciclados pela coleta seletiva comum, além de acumularem bactérias com o uso.",
+    instrucoes: [
+      { icon: "🗑️", texto: "Descarte no lixo comum (rejeito)" },
+      { icon: "🚫", texto: "Não coloque na coleta seletiva — contamina outros recicláveis" },
+      { icon: "🔄", texto: "Troque a esponja regularmente por questões de higiene" },
+      { icon: "🌿", texto: "Considere esponjas biodegradáveis ou buchas vegetais como alternativa" },
+    ],
+    tags: ["Rejeito", "Higiene", "Não Reciclável"]
+  },
+  {
+    nomes: ["camisinha", "preservativo", "camisinha usada"],
+    icon: "🚫", nome: "Camisinha / Preservativo Usado", categoria: "Rejeito", catKey: "rejeito", cor: "cat-rejeito",
+    descricao: "Preservativos usados são resíduo sanitário e devem ser descartados com cuidado, embalados, para evitar contaminação e contato de terceiros.",
+    instrucoes: [
+      { icon: "🧻", texto: "Embrulhe em papel higiênico ou saco plástico fechado" },
+      { icon: "🗑️", texto: "Descarte no lixo comum (rejeito)" },
+      { icon: "🚫", texto: "Nunca jogue no vaso sanitário — entope encanamentos" },
+      { icon: "🚫", texto: "Nunca coloque na coleta seletiva" },
+    ],
+    tags: ["Rejeito", "Higiene", "Sanitário"]
   },
 ];
 
